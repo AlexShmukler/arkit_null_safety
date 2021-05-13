@@ -14,7 +14,7 @@ class ARKitPlane extends ARKitGeometry {
     double height = 1,
     this.widthSegmentCount = 1,
     this.heightSegmentCount = 1,
-    List<ARKitMaterial> materials,
+    List<ARKitMaterial>? materials,
   })  : width = ValueNotifier(width),
         height = ValueNotifier(height),
         super(
@@ -36,12 +36,12 @@ class ARKitPlane extends ARKitGeometry {
   /// The number of subdivisions along the X axis.
   /// If the value is less than 1, the behavior is undefined.
   /// The default value is 1.
-  final int widthSegmentCount;
+  final int? widthSegmentCount;
 
   /// The number of subdivisions along the Y axis. The default value is 1.
   /// If the value is less than 1, the behavior is undefined.
   /// The default value is 1.
-  final int heightSegmentCount;
+  final int? heightSegmentCount;
 
   static ARKitPlane fromJson(Map<String, dynamic> json) =>
       _$ARKitPlaneFromJson(json);

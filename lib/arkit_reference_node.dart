@@ -7,15 +7,15 @@ import 'package:vector_math/vector_math_64.dart';
 ///  Node that references an external serialized node graph.
 class ARKitReferenceNode extends ARKitNode {
   ARKitReferenceNode({
-    @required this.url,
-    ARKitPhysicsBody physicsBody,
-    ARKitLight light,
-    Vector3 position,
-    Vector3 scale,
-    Vector3 eulerAngles,
-    String name,
-    int renderingOrder,
-    bool isHidden,
+    required this.url,
+    ARKitPhysicsBody? physicsBody,
+    ARKitLight? light,
+    Vector3? position,
+    Vector3? scale,
+    Vector3? eulerAngles,
+    String? name,
+    int? renderingOrder,
+    bool? isHidden,
   }) : super(
           physicsBody: physicsBody,
           light: light,

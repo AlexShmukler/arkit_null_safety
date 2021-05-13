@@ -29,7 +29,7 @@ import 'package:flutter/material.dart';
 import 'package:vector_math/vector_math_64.dart';
 
 typedef ARKitPluginCreatedCallback = void Function(ARKitController controller);
-typedef StringResultHandler = void Function(String text);
+typedef StringResultHandler = void Function(String? text);
 typedef AnchorEventHandler = void Function(ARKitAnchor anchor);
 typedef ARKitTapResultHandler = void Function(List<String> nodes);
 typedef ARKitHitResultHandler = void Function(List<ARKitTestResult> hits);
@@ -42,8 +42,8 @@ typedef ARKitPinchGestureHandler = void Function(
 /// A widget that wraps ARSCNView from ARKit.
 class ARKitSceneView extends StatefulWidget {
   const ARKitSceneView({
-    Key key,
-    @required this.onARKitViewCreated,
+    Key? key,
+    required this.onARKitViewCreated,
     this.configuration = ARKitConfiguration.worldTracking,
     this.showStatistics = false,
     this.autoenablesDefaultLighting = true,
@@ -119,22 +119,22 @@ class ARKitSceneView extends StatefulWidget {
   /// Images to detect in the scene.
   /// If set the session will attempt to detect the specified images.
   /// When an image is detected an ARImageAnchor will be added to the session.
-  final String detectionImagesGroupName;
+  final String? detectionImagesGroupName;
 
   /// Images to detect in the scene.
   /// If set the session will attempt to detect the specified images (bundle name or url)
   /// When an image is detected an ARImageAnchor will be added to the session.
-  final List<ARKitReferenceImage> detectionImages;
+  final List<ARKitReferenceImage>? detectionImages;
 
   /// Images to detect in the scene.
   /// If set the session will attempt to detect the specified images.
   /// When an image is detected an ARImageAnchor will be added to the session.
-  final String trackingImagesGroupName;
+  final String? trackingImagesGroupName;
 
   /// Images to detect in the scene.
   /// If set the session will attempt to detect the specified images.
   /// When an image is detected an ARImageAnchor will be added to the session.
-  final List<ARKitReferenceImage> trackingImages;
+  final List<ARKitReferenceImage>? trackingImages;
 
   /// When set every user tap will be processed like user tapped on the center of the screen.
   /// The default is false.
@@ -214,17 +214,17 @@ class ARKitController {
     bool enableRotationRecognizer,
     ARPlaneDetection planeDetection,
     ARWorldAlignment worldAlignment,
-    String detectionImagesGroupName,
-    List<ARKitReferenceImage> detectionImages,
-    String trackingImagesGroupName,
-    List<ARKitReferenceImage> trackingImages,
+    String? detectionImagesGroupName,
+    List<ARKitReferenceImage>? detectionImages,
+    String? trackingImagesGroupName,
+    List<ARKitReferenceImage>? trackingImages,
     bool forceUserTapOnCenter,
     int maximumNumberOfTrackedImages,
     this.debug,
   ) {
     _channel = MethodChannel('arkit_$id');
-    _channel.setMethodCallHandler(_platformCallHandler);
-    _channel.invokeMethod<void>('init', {
+    _channel!.setMethodCallHandler(_platformCallHandler);
+    _channel!.invokeMethod<void>('init', {
       'configuration': configuration.index,
       'showStatistics': showStatistics,
       'autoenablesDefaultLighting': autoenablesDefaultLighting,
@@ -245,11 +245,11 @@ class ARKitController {
     });
   }
 
-  MethodChannel _channel;
+  MethodChannel? _channel;
 
   /// This is called when a session fails.
   /// On failure the session will be paused.
-  StringResultHandler onError;
+  StringResultHandler? onError;
 
   /// This is called when a session is interrupted.
   /// A session will be interrupted and no longer able to track when
@@ -257,33 +257,33 @@ class ARKitController {
   /// for example when the application is sent to the background or when there are
   /// multiple foreground applications (see AVCaptureSessionInterruptionReason).
   /// No additional frame updates will be delivered until the interruption has ended.
-  VoidCallback onSessionWasInterrupted;
+  VoidCallback? onSessionWasInterrupted;
 
   /// This is called when a session interruption has ended.
   /// A session will continue running from the last known state once
   /// the interruption has ended. If the device has moved, anchors will be misaligned.
-  VoidCallback onSessionInterruptionEnded;
+  VoidCallback? onSessionInterruptionEnded;
 
-  ARKitTapResultHandler onNodeTap;
-  ARKitHitResultHandler onARTap;
-  ARKitPinchGestureHandler onNodePinch;
-  ARKitPanResultHandler onNodePan;
-  ARKitRotationResultHandler onNodeRotation;
+  ARKitTapResultHandler? onNodeTap;
+  ARKitHitResultHandler? onARTap;
+  ARKitPinchGestureHandler? onNodePinch;
+  ARKitPanResultHandler? onNodePan;
+  ARKitRotationResultHandler? onNodeRotation;
 
   /// Called when a new node has been mapped to the given anchor.
-  AnchorEventHandler onAddNodeForAnchor;
+  AnchorEventHandler? onAddNodeForAnchor;
 
   /// Called when a node will be updated with data from the given anchor.
-  AnchorEventHandler onUpdateNodeForAnchor;
+  AnchorEventHandler? onUpdateNodeForAnchor;
 
   /// Called when a mapped node has been removed from the scene graph for the given anchor.
-  AnchorEventHandler onDidRemoveNodeForAnchor;
+  AnchorEventHandler? onDidRemoveNodeForAnchor;
 
   /// Called once per frame
-  Function(double time) updateAtTime;
+  Function(double? time)? updateAtTime;
 
   /// Called when camera tracking state is changed;
-  Function(ARTrackingState trackingState, ARTrackingStateReason reason)
+  Function(ARTrackingState trackingState, ARTrackingStateReason? reason)?
       onCameraDidChangeTrackingState;
 
   final bool debug;
@@ -300,31 +300,31 @@ class ARKitController {
     _channel?.invokeMethod<void>('dispose');
   }
 
-  Future<void> add(ARKitNode node, {String parentNodeName}) {
+  Future<void> add(ARKitNode node, {String? parentNodeName}) {
     assert(node != null);
     final params = _addParentNodeNameToParams(node.toMap(), parentNodeName);
     _subsribeToChanges(node);
-    return _channel.invokeMethod('addARKitNode', params);
+    return _channel!.invokeMethod('addARKitNode', params);
   }
 
   Future<void> remove(String nodeName) {
     assert(nodeName != null);
-    return _channel.invokeMethod('removeARKitNode', {'nodeName': nodeName});
+    return _channel!.invokeMethod('removeARKitNode', {'nodeName': nodeName});
   }
 
   Future<void> removeAnchor(String anchorIdentifier) {
     assert(anchorIdentifier != null);
-    return _channel.invokeMethod(
+    return _channel!.invokeMethod(
         'removeARKitAnchor', {'anchorIdentifier': anchorIdentifier});
   }
 
   /// Perform Hit Test
   /// defaults to center of the screen.
   /// x and y values are between 0 and 1
-  Future<List<ARKitTestResult>> performHitTest({double x, double y}) async {
-    assert(x > 0 && y > 0);
+  Future<List<ARKitTestResult>> performHitTest({required double x, double? y}) async {
+    assert(x > 0 && y! > 0);
     final results =
-        await _channel.invokeListMethod('performHitTest', {'x': x, 'y': y});
+        await _channel!.invokeListMethod('performHitTest', {'x': x, 'y': y});
     if (results == null) {
       return [];
     } else {
@@ -338,15 +338,15 @@ class ARKitController {
   Future<List<Vector3>> getNodeBoundingBox(ARKitNode node) async {
     final params = _addParentNodeNameToParams(node.toMap(), null);
     final result =
-        await _channel.invokeListMethod('getNodeBoundingBox', params);
+        await (_channel!.invokeListMethod('getNodeBoundingBox', params) as FutureOr<List<dynamic>>);
     final typed = result.map((e) => List<double>.from(e));
     final vectors = typed.map((e) => _vector3Converter.fromJson(e));
     return vectors.toList();
   }
 
-  Future<ARKitLightEstimate> getLightEstimate() async {
+  Future<ARKitLightEstimate?> getLightEstimate() async {
     final estimate =
-        await _channel.invokeMethod<Map<dynamic, dynamic>>('getLightEstimate');
+        await _channel!.invokeMethod<Map<dynamic, dynamic>>('getLightEstimate');
     return estimate != null
         ? ARKitLightEstimate.fromJson(estimate.cast<String, double>())
         : null;
@@ -354,46 +354,46 @@ class ARKitController {
 
   /// Updates the geometry with the vertices of a face geometry.
   void updateFaceGeometry(ARKitNode node, String fromAnchorId) {
-    _channel.invokeMethod<void>(
+    _channel!.invokeMethod<void>(
         'updateFaceGeometry',
         _getHandlerParams(
             node, 'geometry', <String, dynamic>{'fromAnchorId': fromAnchorId}));
   }
 
-  Future<Vector3> projectPoint(Vector3 point) async {
-    final projectPoint = await _channel.invokeListMethod<double>(
+  Future<Vector3?> projectPoint(Vector3 point) async {
+    final projectPoint = await _channel!.invokeListMethod<double>(
         'projectPoint', {'point': _vector3Converter.toJson(point)});
     return projectPoint != null
         ? _vector3Converter.fromJson(projectPoint)
         : null;
   }
 
-  Future<Matrix4> cameraProjectionMatrix() async {
+  Future<Matrix4?> cameraProjectionMatrix() async {
     final cameraProjectionMatrix =
-        await _channel.invokeListMethod<double>('cameraProjectionMatrix');
+        await _channel!.invokeListMethod<double>('cameraProjectionMatrix');
     return cameraProjectionMatrix != null
         ? _matrixConverter.fromJson(cameraProjectionMatrix)
         : null;
   }
 
   /// Provides the point of view transform in world space (relative to the scene's root node)
-  Future<Matrix4> pointOfViewTransform() async {
+  Future<Matrix4?> pointOfViewTransform() async {
     final pointOfViewTransform =
-        await _channel.invokeListMethod<double>('pointOfViewTransform');
+        await _channel!.invokeListMethod<double>('pointOfViewTransform');
     return pointOfViewTransform != null
         ? _matrixConverter.fromJson(pointOfViewTransform)
         : null;
   }
 
   Future<void> playAnimation(
-      {@required String key,
-      @required String sceneName,
-      @required String animationIdentifier}) {
+      {required String key,
+      required String sceneName,
+      required String animationIdentifier}) {
     assert(key != null);
     assert(sceneName != null);
     assert(animationIdentifier != null);
 
-    return _channel.invokeMethod('playAnimation', {
+    return _channel!.invokeMethod('playAnimation', {
       'key': key,
       'sceneName': sceneName,
       'animationIdentifier': animationIdentifier,
@@ -401,21 +401,21 @@ class ARKitController {
   }
 
   Future<void> stopAnimation({
-    @required String key,
+    required String key,
   }) {
     assert(key != null);
 
-    return _channel.invokeMethod('stopAnimation', {
+    return _channel!.invokeMethod('stopAnimation', {
       'key': key,
     });
   }
 
   Map<String, dynamic> _addParentNodeNameToParams(
-      Map geometryMap, String parentNodeName) {
+      Map geometryMap, String? parentNodeName) {
     if (parentNodeName?.isNotEmpty ?? false) {
       geometryMap['parentNodeName'] = parentNodeName;
     }
-    return geometryMap;
+    return geometryMap as Map<String, dynamic>;
   }
 
   Future<void> _platformCallHandler(MethodCall call) {
@@ -426,14 +426,14 @@ class ARKitController {
       switch (call.method) {
         case 'onError':
           if (onError != null) {
-            onError(call.arguments);
+            onError!(call.arguments);
             print(call.arguments);
           }
           break;
         case 'onNodeTap':
           if (onNodeTap != null) {
             final list = call.arguments as List<dynamic>;
-            onNodeTap(list.map((e) => e.toString()).toList());
+            onNodeTap!(list.map((e) => e.toString()).toList());
           }
           break;
         case 'onARTap':
@@ -444,7 +444,7 @@ class ARKitController {
             final map2 = map1.map((e) {
               return ARKitTestResult.fromJson(e);
             }).toList();
-            onARTap(map2);
+            onARTap!(map2);
           }
           break;
         case 'onNodePinch':
@@ -453,7 +453,7 @@ class ARKitController {
             final listMap = input.map((e) => Map<String, dynamic>.from(e));
             final objects =
                 listMap.map((e) => ARKitNodePinchResult.fromJson(e));
-            onNodePinch(objects.toList());
+            onNodePinch!(objects.toList());
           }
           break;
         case 'onNodePan':
@@ -461,7 +461,7 @@ class ARKitController {
             final List<dynamic> input = call.arguments;
             final listMap = input.map((e) => Map<String, dynamic>.from(e));
             final objects = listMap.map((e) => ARKitNodePanResult.fromJson(e));
-            onNodePan(objects.toList());
+            onNodePan!(objects.toList());
           }
           break;
         case 'onNodeRotation':
@@ -470,34 +470,34 @@ class ARKitController {
             final listMap = input.map((e) => Map<String, dynamic>.from(e));
             final objects =
                 listMap.map((e) => ARKitNodeRotationResult.fromJson(e));
-            onNodeRotation(objects.toList());
+            onNodeRotation!(objects.toList());
           }
           break;
         case 'didAddNodeForAnchor':
           if (onAddNodeForAnchor != null) {
             final anchor =
                 ARKitAnchor.fromJson(Map<String, dynamic>.from(call.arguments));
-            onAddNodeForAnchor(anchor);
+            onAddNodeForAnchor!(anchor);
           }
           break;
         case 'didUpdateNodeForAnchor':
           if (onUpdateNodeForAnchor != null) {
             final anchor =
                 ARKitAnchor.fromJson(Map<String, dynamic>.from(call.arguments));
-            onUpdateNodeForAnchor(anchor);
+            onUpdateNodeForAnchor!(anchor);
           }
           break;
         case 'didRemoveNodeForAnchor':
           if (onDidRemoveNodeForAnchor != null) {
             final anchor =
                 ARKitAnchor.fromJson(Map<String, dynamic>.from(call.arguments));
-            onDidRemoveNodeForAnchor(anchor);
+            onDidRemoveNodeForAnchor!(anchor);
           }
           break;
         case 'updateAtTime':
           if (updateAtTime != null) {
-            final double time = call.arguments['time'];
-            updateAtTime(time);
+            final double? time = call.arguments['time'];
+            updateAtTime!(time);
           }
           break;
         case 'onCameraDidChangeTrackingState':
@@ -505,10 +505,10 @@ class ARKitController {
             final int rawTrackingState = call.arguments['trackingState'];
             final trackingState = _stateConverter.fromJson(rawTrackingState);
 
-            final int rawReason = call.arguments['reason'];
+            final int? rawReason = call.arguments['reason'];
             final reason = _stateReasonConverter.fromJson(rawReason);
 
-            onCameraDidChangeTrackingState(trackingState, reason);
+            onCameraDidChangeTrackingState!(trackingState, reason);
           }
           break;
         default:
@@ -528,7 +528,7 @@ class ARKitController {
     node.isHidden.addListener(() => _handleIsHiddenChanged(node));
 
     if (node.geometry != null) {
-      node.geometry.materials.addListener(() => _updateMaterials(node));
+      node.geometry!.materials.addListener(() => _updateMaterials(node));
       switch (node.geometry.runtimeType) {
         case ARKitPlane:
           _subscribeToPlaneGeometry(node);
@@ -563,13 +563,13 @@ class ARKitController {
       }
     }
     if (node.light != null) {
-      node.light.intensity.addListener(() => _updateSingleProperty(
-          node, 'intensity', node.light.intensity.value, 'light'));
+      node.light!.intensity.addListener(() => _updateSingleProperty(
+          node, 'intensity', node.light!.intensity.value, 'light'));
     }
   }
 
   void _subscribeToCapsuleGeometry(ARKitNode node) {
-    final ARKitCapsule capsule = node.geometry;
+    final ARKitCapsule capsule = node.geometry as ARKitCapsule;
     capsule.capRadius.addListener(() => _updateSingleProperty(
         node, 'capRadius', capsule.capRadius.value, 'geometry'));
     capsule.height.addListener(() => _updateSingleProperty(
@@ -577,7 +577,7 @@ class ARKitController {
   }
 
   void _subscribeToTorusGeometry(ARKitNode node) {
-    final ARKitTorus torus = node.geometry;
+    final ARKitTorus torus = node.geometry as ARKitTorus;
     torus.pipeRadius.addListener(() => _updateSingleProperty(
         node, 'pipeRadius', torus.pipeRadius.value, 'geometry'));
     torus.ringRadius.addListener(() => _updateSingleProperty(
@@ -585,7 +585,7 @@ class ARKitController {
   }
 
   void _subscribeToTubeGeometry(ARKitNode node) {
-    final ARKitTube tube = node.geometry;
+    final ARKitTube tube = node.geometry as ARKitTube;
     tube.innerRadius.addListener(() => _updateSingleProperty(
         node, 'innerRadius', tube.innerRadius.value, 'geometry'));
     tube.outerRadius.addListener(() => _updateSingleProperty(
@@ -595,7 +595,7 @@ class ARKitController {
   }
 
   void _subscribeToPyramidGeometry(ARKitNode node) {
-    final ARKitPyramid pyramid = node.geometry;
+    final ARKitPyramid pyramid = node.geometry as ARKitPyramid;
     pyramid.width.addListener(() =>
         _updateSingleProperty(node, 'width', pyramid.width.value, 'geometry'));
     pyramid.height.addListener(() => _updateSingleProperty(
@@ -605,7 +605,7 @@ class ARKitController {
   }
 
   void _subscribeToConeGeometry(ARKitNode node) {
-    final ARKitCone cone = node.geometry;
+    final ARKitCone cone = node.geometry as ARKitCone;
     cone.topRadius.addListener(() => _updateSingleProperty(
         node, 'topRadius', cone.topRadius.value, 'geometry'));
     cone.bottomRadius.addListener(() => _updateSingleProperty(
@@ -615,7 +615,7 @@ class ARKitController {
   }
 
   void _subscribeToCylinderGeometry(ARKitNode node) {
-    final ARKitCylinder cylinder = node.geometry;
+    final ARKitCylinder cylinder = node.geometry as ARKitCylinder;
     cylinder.radius.addListener(() => _updateSingleProperty(
         node, 'radius', cylinder.radius.value, 'geometry'));
     cylinder.height.addListener(() => _updateSingleProperty(
@@ -623,7 +623,7 @@ class ARKitController {
   }
 
   void _subscribeToBoxGeometry(ARKitNode node) {
-    final ARKitBox box = node.geometry;
+    final ARKitBox box = node.geometry as ARKitBox;
     box.width.addListener(() =>
         _updateSingleProperty(node, 'width', box.width.value, 'geometry'));
     box.height.addListener(() =>
@@ -633,19 +633,19 @@ class ARKitController {
   }
 
   void _subscribeToTextGeometry(ARKitNode node) {
-    final ARKitText text = node.geometry;
+    final ARKitText text = node.geometry as ARKitText;
     text.text.addListener(
         () => _updateSingleProperty(node, 'text', text.text.value, 'geometry'));
   }
 
   void _subscribeToSphereGeometry(ARKitNode node) {
-    final ARKitSphere sphere = node.geometry;
+    final ARKitSphere sphere = node.geometry as ARKitSphere;
     sphere.radius.addListener(() =>
         _updateSingleProperty(node, 'radius', sphere.radius.value, 'geometry'));
   }
 
   void _subscribeToPlaneGeometry(ARKitNode node) {
-    final ARKitPlane plane = node.geometry;
+    final ARKitPlane plane = node.geometry as ARKitPlane;
     plane.width.addListener(() =>
         _updateSingleProperty(node, 'width', plane.width.value, 'geometry'));
     plane.height.addListener(() =>
@@ -653,28 +653,28 @@ class ARKitController {
   }
 
   void _handleTransformationChanged(ARKitNode node) {
-    _channel.invokeMethod<void>(
+    _channel!.invokeMethod<void>(
         'transformationChanged',
         _getHandlerParams(node, 'transformation',
             _matrixValueNotifierConverter.toJson(node.transformNotifier)));
   }
 
   void _handleIsHiddenChanged(ARKitNode node) {
-    _channel.invokeMethod<void>(
+    _channel!.invokeMethod<void>(
         'isHiddenChanged',
         _getHandlerParams(
             node, 'isHidden', _boolConverter.toJson(node.isHidden)));
   }
 
   void _updateMaterials(ARKitNode node) {
-    final materials = _materialsConverter.toJson(node.geometry.materials);
-    _channel.invokeMethod<void>(
+    final materials = _materialsConverter.toJson(node.geometry!.materials);
+    _channel!.invokeMethod<void>(
         'updateMaterials', _getHandlerParams(node, 'materials', materials));
   }
 
   void _updateSingleProperty(
       ARKitNode node, String propertyName, dynamic value, String keyProperty) {
-    _channel.invokeMethod<void>(
+    _channel!.invokeMethod<void>(
         'updateSingleProperty',
         _getHandlerParams(node, 'property', <String, dynamic>{
           'propertyName': propertyName,
@@ -691,13 +691,13 @@ class ARKitController {
   }
 
   Future<Vector3> getCameraEulerAngles() async {
-    final result = await _channel.invokeListMethod('cameraEulerAngles');
+    final result = await (_channel!.invokeListMethod('cameraEulerAngles') as FutureOr<List<dynamic>>);
     final vector3 = _vector3Converter.fromJson(result);
     return vector3;
   }
 
   Future<ImageProvider> snapshot() async {
-    final result = await _channel.invokeMethod<Uint8List>('snapshot');
+    final result = await (_channel!.invokeMethod<Uint8List>('snapshot') as FutureOr<Uint8List>);
     return MemoryImage(result);
   }
 }

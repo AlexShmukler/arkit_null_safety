@@ -30,10 +30,10 @@ abstract class ARKitAnchor {
   }
 
   /// Represents the name of the node anchor attached to.
-  final String nodeName;
+  final String? nodeName;
 
   /// Unique identifier of the anchor.
-  final String identifier;
+  final String? identifier;
 
   /// The transformation matrix that defines the anchor’s rotation, translation and scale in world coordinates.
   @MatrixConverter()
@@ -47,12 +47,12 @@ abstract class ARKitAnchor {
 class ARKitUnkownAnchor extends ARKitAnchor {
   const ARKitUnkownAnchor(
     this.anchorType,
-    String nodeName,
-    String identifier,
+    String? nodeName,
+    String? identifier,
     Matrix4 transform,
   ) : super(nodeName, identifier, transform);
 
-  final String anchorType;
+  final String? anchorType;
 
   static ARKitUnkownAnchor fromJson(Map<String, dynamic> json) =>
       _$ARKitUnkownAnchorFromJson(json);
@@ -68,8 +68,8 @@ class ARKitPlaneAnchor extends ARKitAnchor {
   const ARKitPlaneAnchor(
     this.center,
     this.extent,
-    String nodeName,
-    String identifier,
+    String? nodeName,
+    String? identifier,
     Matrix4 transform,
   ) : super(
           nodeName,
@@ -99,8 +99,8 @@ class ARKitImageAnchor extends ARKitAnchor {
     this.referenceImageName,
     this.referenceImagePhysicalSize,
     this.isTracked,
-    String nodeName,
-    String identifier,
+    String? nodeName,
+    String? identifier,
     Matrix4 transform,
   ) : super(
           nodeName,
@@ -109,7 +109,7 @@ class ARKitImageAnchor extends ARKitAnchor {
         );
 
   /// Name of the detected image (might be null).
-  final String referenceImageName;
+  final String? referenceImageName;
 
   @Vector2Converter()
   final Vector2 referenceImagePhysicalSize;
@@ -117,7 +117,7 @@ class ARKitImageAnchor extends ARKitAnchor {
   /// Tracking state of the anchor
   /// The isTracked value is used to determine the anchor transform’s validity. When the object being tracked is no longer detected in the
   /// camera image, its anchor will return NO for isTracked.
-  final bool isTracked;
+  final bool? isTracked;
 
   static ARKitImageAnchor fromJson(Map<String, dynamic> json) =>
       _$ARKitImageAnchorFromJson(json);
@@ -133,8 +133,8 @@ class ARKitFaceAnchor extends ARKitAnchor {
     this.geometry,
     this.blendShapes,
     this.isTracked,
-    String nodeName,
-    String identifier,
+    String? nodeName,
+    String? identifier,
     Matrix4 transform,
     this.leftEyeTransform,
     this.rightEyeTransform,
@@ -162,7 +162,7 @@ class ARKitFaceAnchor extends ARKitAnchor {
   /// Tracking state of the anchor
   /// The isTracked value is used to determine the anchor transform’s validity. When the object being tracked is no longer detected in the
   /// camera image, its anchor will return NO for isTracked.
-  final bool isTracked;
+  final bool? isTracked;
 
   static ARKitFaceAnchor fromJson(Map<String, dynamic> json) =>
       _$ARKitFaceAnchorFromJson(json);
@@ -177,8 +177,8 @@ class ARKitBodyAnchor extends ARKitAnchor {
   ARKitBodyAnchor(
     this.skeleton,
     this.isTracked,
-    String nodeName,
-    String identifier,
+    String? nodeName,
+    String? identifier,
     Matrix4 transform,
   ) : super(
           nodeName,
@@ -193,7 +193,7 @@ class ARKitBodyAnchor extends ARKitAnchor {
   /// Tracking state of the anchor
   /// The isTracked value is used to determine the anchor transform’s validity. When the object being tracked is no longer detected in the
   /// camera image, its anchor will return NO for isTracked.
-  final bool isTracked;
+  final bool? isTracked;
 
   static ARKitBodyAnchor fromJson(Map<String, dynamic> json) =>
       _$ARKitBodyAnchorFromJson(json);

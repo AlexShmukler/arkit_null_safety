@@ -11,9 +11,9 @@ part 'arkit_text.g.dart';
 @JsonSerializable()
 class ARKitText extends ARKitGeometry {
   ARKitText({
-    @required String text,
-    @required this.extrusionDepth,
-    List<ARKitMaterial> materials,
+    required String? text,
+    required this.extrusionDepth,
+    List<ARKitMaterial>? materials,
   })  : text = ValueNotifier(text),
         super(
           materials: materials,
@@ -21,7 +21,7 @@ class ARKitText extends ARKitGeometry {
 
   /// The text to be represented.
   @StringValueNotifierConverter()
-  final ValueNotifier<String> text;
+  final ValueNotifier<String?> text;
 
   /// The extrusion depth.
   /// If the value is 0, we get a mono-sided, 2D version of the text.

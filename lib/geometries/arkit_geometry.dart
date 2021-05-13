@@ -9,7 +9,7 @@ part 'arkit_geometry.g.dart';
 
 /// ARKitGeometry is an abstract class that represents the geometry that can be attached to a SCNNode.
 abstract class ARKitGeometry {
-  ARKitGeometry({@required List<ARKitMaterial> materials})
+  ARKitGeometry({required List<ARKitMaterial>? materials})
       : materials = ValueNotifier(materials);
 
   factory ARKitGeometry.fromJson(Map<String, dynamic> arguments) {
@@ -47,16 +47,16 @@ abstract class ARKitGeometry {
   /// Each geometry element can be rendered using a different material.
   /// The index of the material used for a geometry element is equal to the index of that element modulo the number of materials.
   @ListMaterialsValueNotifierConverter()
-  final ValueNotifier<List<ARKitMaterial>> materials;
+  final ValueNotifier<List<ARKitMaterial>?> materials;
 
   Map<String, dynamic> toJson();
 }
 
 @JsonSerializable()
 class ARKitUnkownGeometry extends ARKitGeometry {
-  ARKitUnkownGeometry(this.geometryType);
+  ARKitUnkownGeometry(this.geometryType) : super(materials: null);
 
-  final String geometryType;
+  final String? geometryType;
 
   static ARKitUnkownGeometry fromJson(Map<String, dynamic> json) =>
       _$ARKitUnkownGeometryFromJson(json);

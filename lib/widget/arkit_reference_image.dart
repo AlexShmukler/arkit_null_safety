@@ -11,10 +11,10 @@ class ARKitReferenceImage {
   });
 
   /// An image name for local images (bundle, asset, or url)
-  final String name;
+  final String? name;
 
   /// The physical width of the image in meters.
-  final double physicalWidth;
+  final double? physicalWidth;
 
   static ARKitReferenceImage fromJson(Map<String, double> map) =>
       _$ARKitReferenceImageFromJson(map);
