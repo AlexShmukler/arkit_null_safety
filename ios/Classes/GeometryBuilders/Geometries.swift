@@ -81,8 +81,3 @@ func createCapsule(_ arguments: Dictionary<String, Any>) -> SCNCapsule {
     return SCNCapsule(capRadius: CGFloat(capRadius), height: CGFloat(height))
 }
 
-#if !DISABLE_TRUEDEPTH_API
-func createFace(_ device: MTLDevice?) -> ARSCNFaceGeometry {
-    return ARSCNFaceGeometry(device: device!)!
-}
-#endif

@@ -41,11 +41,6 @@ func createGeometry(_ arguments: Dictionary<String, Any>?, withDevice device: MT
         geometry = createCapsule(arguments)
         break
     case "ARKitFace":
-        #if !DISABLE_TRUEDEPTH_API
-        geometry = createFace(device)
-        #else
-        // error
-        #endif
         break
     default:
         // error
